@@ -30,7 +30,7 @@ spring:
     hikari:
       driver-class-name: org.postgresql.Driver
     username: postgres
-    password: h@r$#A2196
+    password: ${POSTGRES_PASS}
   kafka:
     consumer:
       properties:

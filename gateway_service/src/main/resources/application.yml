@@ -12,18 +12,6 @@ spring:
       host: localhost
       discovery:
         service-name: gateway-service
-    gateway:
-      server:
-        webflux:
-          routes:
-            - id: account
-              uri: lb://account-service
-              predicates:
-                - Path=/accounts/**
-            - id: transaction
-              uri: lb://transaction-service
-              predicates:
-                - Path=/transactions/**
     config:
       discovery:
         enabled: true
