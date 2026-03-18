@@ -1,0 +1,9 @@
+rootProject.name = "microbanking-application"
+
+include "common-lib"
+include "account_service"
+include "transaction_service"
+include "notification_service"
+include "gateway_service"
+include "config_service"
+

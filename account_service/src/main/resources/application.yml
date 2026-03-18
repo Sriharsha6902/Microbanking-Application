@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: account-service
+
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+  datasource:
+    url: jdbc:postgresql://localhost:5432/microbank?account
+    hikari:
+      driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: h@r$#A2196
+server:
+  port: 8081

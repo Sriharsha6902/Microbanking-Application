@@ -1,0 +1,153 @@
+version: '3.9'
+
+services:
+  # PostgreSQL
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: microbank
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - microbank-network
+
+  # Consul
+  consul:
+    image: hashicorp/consul:1.21
+    command: "agent -dev -client=0.0.0.0"
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    networks:
+      - microbank-network
+
+  # Kafka + Zookeeper
+  zookeeper:
+    image: zookeeper:3.9.4
+    ports:
+      - "2181:2181"
+    networks:
+      - microbank-network
+
+  kafka:
+    image: apache/kafka:4.0.0
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+    depends_on:
+      - zookeeper
+    networks:
+      - microbank-network
+
+  # Config Server
+  config-service:
+    build:
+      context: ./Config Service
+    container_name: config-service
+    ports:
+      - "8888:8080"
+    environment:
+      SPRING_CLOUD_CONSUL_HOST: consul
+    depends_on:
+      - consul
+    networks:
+      - microbank-network
+
+  # Microservices
+  account-service:
+    build:
+      context: ./account-service
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/microbank
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONFIG_URI: http://config-service:8080
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - postgres
+      - consul
+      - kafka
+      - config-service
+    networks:
+      - microbank-network
+
+  transaction-service:
+    build:
+      context: ./Transaction Service
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/microbank
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONFIG_URI: http://config-service:8080
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - postgres
+      - consul
+      - kafka
+      - config-service
+    networks:
+      - microbank-network
+
+  notification-service:
+    build:
+      context: ./Notification Service
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/microbank
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONFIG_URI: http://config-service:8080
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - postgres
+      - consul
+      - kafka
+      - config-service
+    networks:
+      - microbank-network
+
+  # Prometheus
+  prometheus:
+    image: prom/prometheus:v3.6.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - microbank-network
+
+  # Grafana
+  grafana:
+    image: grafana/grafana:12.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - microbank-network
+
+volumes:
+  postgres-data:
+
+networks:
+  microbank-network:
+    driver: bridge
