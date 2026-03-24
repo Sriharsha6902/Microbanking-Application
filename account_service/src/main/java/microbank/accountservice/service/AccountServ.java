@@ -7,6 +7,7 @@ import microbank.accountservice.exceptions.AccountAlreadyExistsException;
 import microbank.accountservice.exceptions.AccountNotFoundException;
 import microbank.accountservice.exceptions.AccountUpdateException;
 import microbank.accountservice.repository.AccountRepo;
+import microbank.accountservice.util.AccountUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,11 @@ import java.util.Optional;
 @Service
 public class AccountServ {
     private final AccountRepo accountRepo;
+    private final AccountUtils accountUtils;
 
     public AccountDto createAccount(AccountEntity accountEntity) {
         AccountDto accountDto = new AccountDto();
+        accountEntity.setAccountId(accountUtils.createAccountId());
         try {
             this.accountRepo.save(accountEntity);
         } catch (DataIntegrityViolationException ex) {
@@ -57,7 +60,7 @@ public class AccountServ {
 
     public AccountDto getAccount(AccountEntity accountEntity) {
         AccountDto accountDto = new AccountDto();
-        Optional<AccountEntity> accountEntity1 = this.accountRepo.findById(accountEntity.getId());
+        Optional<AccountEntity> accountEntity1 = this.accountRepo.findById(accountEntity.getAccountId());
         if (accountEntity1.isEmpty()) {
             throw new AccountNotFoundException("Account not found");
         }

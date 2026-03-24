@@ -7,4 +7,6 @@ include "notification_service"
 include "gateway_service"
 include "config_service"
 include "loan_service"
+include "orchestrator_service"
+include "ledger_service"
 

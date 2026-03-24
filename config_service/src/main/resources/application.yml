@@ -12,7 +12,10 @@ spring:
           username: Sriharsha6902
           default-label: main
           password: ${PAT}
-
+  security:
+    user:
+      name: admin
+      password: harsha123
 management:
   endpoints:
     web:

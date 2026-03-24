@@ -1,14 +1,17 @@
 package microbank.accountservice.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
+import java.math.BigDecimal;
 
-@Table
+@Table(name = "Accounts")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,8 +20,11 @@ import java.util.UUID;
 public class AccountEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(name = "AccountID")
+    private String accountId;
+
+    @Column(name = "Username", unique = true, nullable = false)
+    private String username;
 
     @Column(name = "First Name", nullable = false)
     private String firstName;
@@ -35,6 +41,6 @@ public class AccountEntity {
     @Column(name = "Email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "User_pa")
-    private String password;
+    @Column
+    private BigDecimal balance;
 }

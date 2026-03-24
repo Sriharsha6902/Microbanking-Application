@@ -9,13 +9,15 @@ spring:
       discovery:
         enabled: true
         service-id: config-service
-
   datasource:
     url: jdbc:postgresql://localhost:5432/microbank
     hikari:
       driver-class-name: org.postgresql.Driver
     username: postgres
     password: ${POSTGRES_PASS}
+  jpa:
+    hibernate:
+      ddl-auto: create
 server:
   port: 8082
 
@@ -27,3 +29,6 @@ management:
   endpoint:
     prometheus:
       access: read_only
+
+snowflake:
+  node-id: 3002

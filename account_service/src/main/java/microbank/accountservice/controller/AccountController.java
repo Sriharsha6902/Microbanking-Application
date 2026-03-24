@@ -59,6 +59,6 @@ public class AccountController {
     }
 
     private void sendKafkaMessage(KafkaTopic kafkaTopic) {
-        kafkaTemplate.send("account", kafkaTopic);
+        kafkaTemplate.send("account-events", kafkaTopic);
     }
 }

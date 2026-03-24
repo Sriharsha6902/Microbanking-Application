@@ -9,6 +9,8 @@ spring:
       discovery:
         enabled: true
         service-id: config-service
+      username: admin
+      password: harsha123
   jpa:
     generate-ddl: true
     hibernate:
@@ -21,3 +23,6 @@ spring:
     password: ${POSTGRES_PASS}
 server:
   port: 8081
+
+snowflake:
+  node-id: 3001

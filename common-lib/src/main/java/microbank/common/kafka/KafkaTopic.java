@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,5 +15,5 @@ public class KafkaTopic {
     private String name;
     private String message;
     private String topic;
-    private String email;
+    private Map<String, Object> data;
 }
