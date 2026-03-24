@@ -17,7 +17,7 @@ public class KafkaNotificationListener {
     public void accountListener(KafkaTopic kafkaTopic) {
         MailInfo mailInfo = MailInfo.builder()
                 .subject("Test")
-                .sendTo(kafkaTopic.getEmail())
+                .sendTo((String) kafkaTopic.getData().get("email"))
                 .messageText("test mail")
                 .build();
         notificationServ.sendEmail(mailInfo);
@@ -27,7 +27,7 @@ public class KafkaNotificationListener {
     public void transactionListener(KafkaTopic kafkaTopic) {
         MailInfo mailInfo = MailInfo.builder()
                 .subject("Test")
-                .sendTo(kafkaTopic.getEmail())
+                .sendTo((String) kafkaTopic.getData().get("email"))
                 .messageText("test mail")
                 .build();
         notificationServ.sendEmail(mailInfo);

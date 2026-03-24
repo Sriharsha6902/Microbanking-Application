@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/account")
@@ -23,7 +26,9 @@ public class AccountController {
     public ResponseEntity<AccountDto> createAccount(@RequestBody AccountEntity accountEntity) {
         ResponseEntity<AccountDto> responseEntity = new ResponseEntity<>(this.service.createAccount(accountEntity), HttpStatus.CREATED);
         KafkaTopic kafkaTopic = new KafkaTopic();
-        kafkaTopic.setEmail(accountEntity.getEmail());
+        Map<String, Object> data = new HashMap<>();
+        data.put("email", accountEntity.getEmail());
+        kafkaTopic.setData(data);
         kafkaTopic.setMessage(CommonEnums.ACCOUNT_CREATED.value);
         kafkaTopic.setTopic(CommonEnums.ACCOUNT_TOPIC.value);
         this.sendKafkaMessage(kafkaTopic);
@@ -35,7 +40,9 @@ public class AccountController {
     public ResponseEntity<AccountDto> updateAccount(@RequestBody AccountEntity accountEntity) {
         ResponseEntity<AccountDto> responseEntity = new ResponseEntity<>(this.service.updateAccount(accountEntity), HttpStatus.OK);
         KafkaTopic kafkaTopic = new KafkaTopic();
-        kafkaTopic.setEmail(accountEntity.getEmail());
+        Map<String, Object> data = new HashMap<>();
+        data.put("email", accountEntity.getEmail());
+        kafkaTopic.setData(data);
         kafkaTopic.setMessage(CommonEnums.ACCOUNT_UPDATED.name());
         kafkaTopic.setTopic(CommonEnums.ACCOUNT_TOPIC.name());
         this.sendKafkaMessage(kafkaTopic);
@@ -46,7 +53,9 @@ public class AccountController {
     public ResponseEntity<AccountDto> deleteAccount(@RequestBody AccountEntity accountEntity) {
         ResponseEntity<AccountDto> responseEntity = new ResponseEntity<>(this.service.deleteAccount(accountEntity), HttpStatus.OK);
         KafkaTopic kafkaTopic = new KafkaTopic();
-        kafkaTopic.setEmail(accountEntity.getEmail());
+        Map<String, Object> data = new HashMap<>();
+        data.put("email", accountEntity.getEmail());
+        kafkaTopic.setData(data);
         kafkaTopic.setMessage(CommonEnums.ACCOUNT_DELETED.name());
         kafkaTopic.setTopic(CommonEnums.ACCOUNT_TOPIC.name());
         this.sendKafkaMessage(kafkaTopic);

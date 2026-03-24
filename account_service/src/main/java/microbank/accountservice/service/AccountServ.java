@@ -21,7 +21,7 @@ public class AccountServ {
 
     public AccountDto createAccount(AccountEntity accountEntity) {
         AccountDto accountDto = new AccountDto();
-        accountEntity.setAccountId(accountUtils.createAccountId());
+        accountEntity.setAccountId(this.accountUtils.createAccountId());
         try {
             this.accountRepo.save(accountEntity);
         } catch (DataIntegrityViolationException ex) {

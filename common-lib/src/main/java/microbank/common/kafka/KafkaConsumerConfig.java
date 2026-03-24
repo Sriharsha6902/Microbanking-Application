@@ -1,6 +1,5 @@
-package microbank.notification_service.kafka;
+package microbank.common.kafka;
 
-import microbank.common.kafka.KafkaTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +24,7 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "microbank_notification_service");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "microbank.common");
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "microbank.common.kafka");
         return new DefaultKafkaConsumerFactory<String, KafkaTopic>(props);
     }
 

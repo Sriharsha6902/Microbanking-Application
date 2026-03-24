@@ -12,6 +12,6 @@ public class AccountUtils {
     private final SnowFlakeGen snowFlakeGen = new SnowFlakeGen(nodeId);
 
     public String createAccountId() {
-        return "ACCOUNT" + snowFlakeGen.createEntityId();
+        return "ACC" + snowFlakeGen.createEntityId();
     }
 }
